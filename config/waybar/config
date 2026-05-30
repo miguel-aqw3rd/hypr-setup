@@ -1,0 +1,45 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 28,
+
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": ["network", "battery"],
+
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "on-click": "activate",
+
+    // Icon selection priority: "active" → "urgent" → workspace-id → "persistent" → "default"
+    "format-icons": {
+      "urgent":     "",
+      "active":     "",
+      "persistent": ""
+    },
+
+    // Pins exactly 6 workspace slots on every monitor ("*") so the bar never
+    // reflows when workspaces are created or destroyed.
+    "persistent-workspaces": {
+      "*": 6
+    }
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "tooltip-format": "{:%A, %d %B %Y}"
+  },
+
+  "network": {
+    "format-wifi": "  {signalStrength}%",
+    "format-ethernet": "",
+    "format-disconnected": ""
+  },
+
+  "battery": {
+    "format": "{capacity}%",
+    "format-charging": " {capacity}%",
+    "format-full": "  {capacity}%"
+  },
+
+}

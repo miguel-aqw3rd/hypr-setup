@@ -120,47 +120,15 @@ install_packages() {
     esac
 }
 
-# ── dotfiles ──────────────────────────────────────────────────────────────────
-
-_deploy_dotfiles_repo() {
-    local repo="$1" clone_dir="$2" config_dir="$3"
-
-    if [[ -d "$config_dir" ]]; then
-        warn "$(basename "$config_dir") config already exists — skipping"
-        return
-    fi
-
-    info "Cloning $(basename "$config_dir") config..."
-    git clone --depth=1 "$repo" "$clone_dir"
-
-    cp -r "$clone_dir" "$config_dir"
-    rm -rf "$config_dir/.git"
-
-    success "$(basename "$config_dir") config installed"
-}
-
-install_dotfiles() {
-    local HYPRLAND_REPO="PLACEHOLDER_HYPRLAND_REPO_URL"
-    local WAYBAR_REPO="PLACEHOLDER_WAYBAR_REPO_URL"
-    local ROFI_REPO="PLACEHOLDER_ROFI_REPO_URL"
-
-    require git
-
-    local tmp_dir
-    tmp_dir=$(mktemp -d)
-    trap 'rm -rf "$tmp_dir"' RETURN
-
-    _deploy_dotfiles_repo "$HYPRLAND_REPO" "$tmp_dir/hypr"   "$HOME/.config/hypr"
-    _deploy_dotfiles_repo "$WAYBAR_REPO"   "$tmp_dir/waybar" "$HOME/.config/waybar"
-    _deploy_dotfiles_repo "$ROFI_REPO"     "$tmp_dir/rofi"   "$HOME/.config/rofi"
-}
-
 # ── main ──────────────────────────────────────────────────────────────────────
 
 main() {
+    local script_dir
+    script_dir=$(dirname "$(realpath "$0")")
+
     install_packages
     install_jetbrainsmono_nerd_font
-    install_dotfiles
+    bash "${script_dir}/load_config.sh"
 }
 
 main "$@"

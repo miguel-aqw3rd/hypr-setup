@@ -79,6 +79,8 @@ install_jetbrainsmono_nerd_font() {
 # playerctl             — media player controller; required by the
 #                         XF86Audio* media keybindings in hyprland.conf
 # nautilus              — file manager ($fileManager in hyprland.conf)
+# swaybg                — Wayland native wallpaper setter; sets a static image
+#                         as the desktop background; called at login via exec-once
 # grim                  — screenshot tool for Wayland; captures the whole screen
 #                         or a specific region/output — no X11 dependency
 # slurp                 — interactive region selector; pipe its output into grim
@@ -107,6 +109,7 @@ _install_packages_fedora() {
         brightnessctl \
         playerctl \
         nautilus \
+        swaybg \
         grim \
         slurp \
         satty
@@ -138,6 +141,7 @@ main() {
     install_packages
     install_jetbrainsmono_nerd_font
     bash "${script_dir}/load_config.sh"
+    bash "${script_dir}/copy_wallpapers.sh"
 }
 
 main "$@"

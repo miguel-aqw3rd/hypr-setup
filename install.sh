@@ -19,16 +19,17 @@ require() {
 install_jetbrainsmono_nerd_font() {
     local font_dir="${HOME}/.local/share/fonts/JetBrainsMonoNF"
     local zip_url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
-    local tmp_dir
-    tmp_dir=$(mktemp -d)
-
-    require curl unzip fc-cache
 
     if fc-list | grep -qi "JetBrainsMono Nerd Font"; then
         warn "JetBrainsMono Nerd Font already installed — skipping"
-        rm -rf "$tmp_dir"
         return
     fi
+
+    require curl unzip fc-cache
+
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+    trap 'rm -rf "$tmp_dir"' RETURN
 
     info "Downloading JetBrainsMono Nerd Font..."
     curl -fsSL --progress-bar "$zip_url" -o "${tmp_dir}/JetBrainsMono.zip"
@@ -40,7 +41,6 @@ install_jetbrainsmono_nerd_font() {
     info "Refreshing font cache..."
     fc-cache -f "$font_dir"
 
-    rm -rf "$tmp_dir"
     success "JetBrainsMono Nerd Font installed"
 }
 

@@ -142,6 +142,7 @@ main() {
     install_jetbrainsmono_nerd_font
     bash "${script_dir}/load_config.sh"
     bash "${script_dir}/copy_wallpapers.sh"
+    bash "${script_dir}/apps/setup_flathub.sh"
 }
 
 main "$@"

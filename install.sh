@@ -79,6 +79,12 @@ install_jetbrainsmono_nerd_font() {
 # playerctl             — media player controller; required by the
 #                         XF86Audio* media keybindings in hyprland.conf
 # nautilus              — file manager ($fileManager in hyprland.conf)
+# grim                  — screenshot tool for Wayland; captures the whole screen
+#                         or a specific region/output — no X11 dependency
+# slurp                 — interactive region selector; pipe its output into grim
+#                         to take an area screenshot (grim -g "$(slurp)")
+# satty                 — screenshot annotation tool; pipe grim output into it
+#                         to draw arrows, text and shapes before saving/sharing
 
 _install_packages_fedora() {
     local version="$1"
@@ -100,7 +106,10 @@ _install_packages_fedora() {
         lxqt-policykit \
         brightnessctl \
         playerctl \
-        nautilus
+        nautilus \
+        grim \
+        slurp \
+        satty
     success "Packages installed"
 }
 

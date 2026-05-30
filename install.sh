@@ -45,6 +45,40 @@ install_jetbrainsmono_nerd_font() {
 }
 
 # ── packages ──────────────────────────────────────────────────────────────────
+#
+# Unlike a full DE (GNOME, Plasma), Hyprland is a bare compositor — it provides
+# window management and nothing else. Every piece of a working desktop must be
+# installed and wired up explicitly. The packages below cover those gaps:
+#
+# hyprland              — the Wayland compositor itself
+# kitty                 — terminal emulator ($terminal in hyprland.conf)
+# waybar                — status bar (autostarted by Hyprland via exec-once)
+# rofi-wayland          — application launcher ($menu in hyprland.conf); the
+#                         -wayland fork speaks the Wayland protocol directly
+#                         instead of going through XWayland
+# swaync                — notification daemon; must be running or apps that
+#                         emit notifications (Discord, etc.) will freeze waiting
+#                         for a D-Bus response that never comes
+# pipewire              — audio/video server; replaces PulseAudio and is
+#                         required for screen sharing under Wayland
+# wireplumber           — session & policy manager for PipeWire; without it
+#                         PipeWire has no routing logic and produces no audio
+# xdg-desktop-portal-hyprland — Hyprland-specific portal backend; enables
+#                         screen capture and sharing in browsers and apps
+# xdg-desktop-portal-gtk      — GTK portal backend; provides the file picker
+#                         and other portal interfaces not covered by the
+#                         Hyprland backend (used by Flatpak sandboxed apps)
+# qt5-wayland           — Qt5 Wayland platform plugin; without it Qt5 apps
+#                         fall back to XWayland instead of running natively
+# qt6-wayland           — same as above for Qt6 apps
+# lxqt-policykit        — polkit authentication agent; without a running agent
+#                         privilege dialogs (mounting drives, package managers)
+#                         silently fail — no password prompt ever appears
+# brightnessctl         — controls backlight brightness; required by the
+#                         XF86MonBrightness keybindings in hyprland.conf
+# playerctl             — media player controller; required by the
+#                         XF86Audio* media keybindings in hyprland.conf
+# nautilus              — file manager ($fileManager in hyprland.conf)
 
 _install_packages_fedora() {
     local version="$1"
@@ -56,6 +90,14 @@ _install_packages_fedora() {
         kitty \
         waybar \
         rofi-wayland \
+        swaync \
+        pipewire \
+        wireplumber \
+        xdg-desktop-portal-hyprland \
+        xdg-desktop-portal-gtk \
+        qt5-wayland \
+        qt6-wayland \
+        lxqt-policykit \
         brightnessctl \
         playerctl \
         nautilus
@@ -83,10 +125,13 @@ install_packages() {
 _deploy_dotfiles_repo() {
     local repo="$1" clone_dir="$2" config_dir="$3"
 
+    if [[ -d "$config_dir" ]]; then
+        warn "$(basename "$config_dir") config already exists — skipping"
+        return
+    fi
+
     info "Cloning $(basename "$config_dir") config..."
     git clone --depth=1 "$repo" "$clone_dir"
-
-    [[ -d "$config_dir" ]] && rm -rf "$config_dir"
 
     cp -r "$clone_dir" "$config_dir"
     rm -rf "$config_dir/.git"
